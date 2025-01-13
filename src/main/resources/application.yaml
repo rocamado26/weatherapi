@@ -1,0 +1,37 @@
+spring:
+  config:
+    activate:
+      on-profile:
+      - dev
+    mvc:
+      pathmatch:
+        matching-strategy: ant_path_matcher
+  application:
+    environment: ${PROFILE_ACTIVE:dev}
+    version: 1.0
+    name: ${APPLICATION_NAME:items}
+  output:
+    ansi:
+      enabled: ALWAYS
+server:
+  port: ${SERVER_PORT:9095}
+  error:
+    whitelabel:
+      enabled: false
+  servlet:
+    context-path: /weather
+logging:
+  level:
+    com:
+      roberto: ${LOG_LEVEL:INFO}
+url:
+  weather: ${URL_WEATHER_API:http://api.weatherapi.com/v1/}
+  key: ${KEY_API:ab0a5739de58443ba4e155144251301}
+management:
+  endpoints:
+    web:
+      exposure:
+        include:
+          - health
+          - info
+          - metrics
