@@ -1,25 +1,35 @@
 package com.roberto.weatherapi.controllers;
 
-
+import com.roberto.weatherapi.dto.user.User;
 import com.roberto.weatherapi.interfaces.weatherInterface;
-import lombok.extern.slf4j.Slf4j;
+import com.roberto.weatherapi.security.JwtUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-@RequestMapping("/v1")
-@Slf4j
 @RestController
 public class weatherController {
 
     @Autowired
+    private JwtUtil jwtUtil;
+
+    @Autowired
     weatherInterface weatherService;
 
-    @GetMapping("/weathercity")
+    @PostMapping("/login")
+    public User login(@RequestParam("user") String username, @RequestParam("password") String pwd) {
+
+        final String jwt = jwtUtil.generateToken(username);
+        User user = new User();
+        user.setUsername(username);
+        user.setToken("Bearer "+ jwt);
+        return user;
+    }
+
+    @PostMapping("/weathercity")
     public ResponseEntity<Object> getWeather(
-            @RequestParam(value = "city", required = false) String city) {
+           @RequestParam("city") String city) {
 
         return weatherService.getItems(city);
     }
-
 }
