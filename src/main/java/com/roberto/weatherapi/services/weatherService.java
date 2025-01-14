@@ -69,7 +69,7 @@ public class weatherService implements weatherInterface {
                 responseService.setMessage("Algo salió mal, por favor intentalo de nuevo");
             }
 
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(responseService);
+            return ResponseEntity.status(HttpStatus.OK).body(responseService);
 
         }catch (Exception ex){
             responseService.setMessage("Algo salió mal, por favor intentalo de nuevo");

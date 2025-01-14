@@ -106,10 +106,9 @@ metadata:
   name: weather-api-svc
 spec:
   ports:
-    - name: service-port-internal
+    - protocol: TCP
       port: 8081
-      protocol: TCP
       targetPort: 8081
   selector:
     app: weather-api
-  type: LoadBalancer
+  type: NodePort
