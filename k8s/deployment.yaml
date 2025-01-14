@@ -9,25 +9,14 @@ spec:
   selector:
     matchLabels:
       app: weather-api
-      tier: backend
   template:
     metadata:
       labels:
         app: weather-api
-        tier: backend
     spec:
-      automountServiceAccountToken: false
       containers:
         - name: weather-api
-          image: weather-api
-          securityContext:
-            capabilities:
-              drop:
-                - NET_RAW
-            allowPrivilegeEscalation: false
-            seccompProfile:
-              type: RuntimeDefault
-          imagePullPolicy: Always
+          image: weather-api:latest
           resources:
             limits:
               memory: "360Mi"
@@ -37,6 +26,7 @@ spec:
               cpu: "200m"
           ports:
             - containerPort: 8081
+          imagePullPolicy: Never
           readinessProbe:
             httpGet:
               path: /weather/actuator/health
@@ -113,15 +103,8 @@ spec:
 apiVersion: v1
 kind: Service
 metadata:
-  annotations:
-    cloud.google.com/neg: '{"ingress":true}'
-    cloud.google.com/backend-config: '{"default": "weather-api-backendconfig"}'
-  name: s-weather-api-private-qa
+  name: weather-api-svc
 spec:
-  internalTrafficPolicy: Cluster
-  ipFamilies:
-    - IPv4
-  ipFamilyPolicy: SingleStack
   ports:
     - name: service-port-internal
       port: 8081
@@ -129,5 +112,4 @@ spec:
       targetPort: 8081
   selector:
     app: weather-api
-  sessionAffinity: None
   type: LoadBalancer
