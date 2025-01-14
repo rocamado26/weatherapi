@@ -17,7 +17,6 @@ public class Main {
     public static void main(String[] args) {
 
         ConfigurableEnvironment environment = new StandardEnvironment();
-        environment.setActiveProfiles(getenv("PROFILE_ACTIVE"));
         int cores = Runtime.getRuntime().availableProcessors();
         SpringApplication sa = new SpringApplication(Main.class);
         sa.setEnvironment(environment);
