@@ -100,22 +100,6 @@ spec:
                 path: APPLICATION_NAME
               - key: key.api
                 path: KEY_API
----
-## BACKEND CONFIG
-apiVersion: cloud.google.com/v1
-kind: BackendConfig
-metadata:
-  name: weather-api-backendconfig
-spec:
-  timeoutSec: 300
-  healthCheck:
-    checkIntervalSec: 300
-    timeoutSec: 180
-    healthyThreshold: 2
-    unhealthyThreshold: 2
-    type: HTTP
-    requestPath: /weather/actuator/health
-    port: 8081
 
 ---
 ### SERVICE
@@ -139,4 +123,4 @@ spec:
   selector:
     app: weather-api
   sessionAffinity: None
-  type: ClusterIP
+  type: LoadBalancer
