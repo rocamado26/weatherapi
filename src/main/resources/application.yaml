@@ -7,7 +7,7 @@ spring:
       pathmatch:
         matching-strategy: ant_path_matcher
   application:
-    environment: dev
+    environment: ${PROFILE_ACTIVE:dev}
     version: 1.0
     name: ${APPLICATION_NAME:weatherapi}
   output:

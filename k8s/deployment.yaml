@@ -60,6 +60,11 @@ spec:
           env:
             - name: TZ
               value: America/El_Salvador
+            - name: PROFILE_ACTIVE
+              valueFrom:
+                configMapKeyRef:
+                  name: properties-weather-api
+                  key: profile.active
             - name: SERVER_PORT
               valueFrom:
                 configMapKeyRef:
@@ -90,6 +95,8 @@ spec:
           configMap:
             name: properties-weather-api
             items:
+              - key: profile.active
+                path: PROFILE_ACTIVE
               - key: server.port
                 path: SERVER_PORT
               - key: url.api.weather
