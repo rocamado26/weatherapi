@@ -7,9 +7,9 @@ spring:
       pathmatch:
         matching-strategy: ant_path_matcher
   application:
-    environment: ${PROFILE_ACTIVE:dev}
+    environment: dev
     version: 1.0
-    name: ${APPLICATION_NAME:items}
+    name: ${APPLICATION_NAME:weatherapi}
   output:
     ansi:
       enabled: ALWAYS
@@ -26,7 +26,7 @@ logging:
       roberto: ${LOG_LEVEL:INFO}
 url:
   weather: ${URL_WEATHER_API:http://api.weatherapi.com/v1/}
-  key: ${KEY_API:ab0a5739de58443ba4e155144251301}
+  key: ${KEY_API:ea6ac94922bf41b8ad4211249232303}
 management:
   endpoints:
     web:

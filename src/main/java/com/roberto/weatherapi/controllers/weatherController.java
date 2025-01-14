@@ -1,5 +1,6 @@
 package com.roberto.weatherapi.controllers;
 
+import com.roberto.weatherapi.dto.response.ResponseHeader;
 import com.roberto.weatherapi.dto.user.User;
 import com.roberto.weatherapi.interfaces.weatherInterface;
 import com.roberto.weatherapi.security.JwtUtil;
@@ -27,7 +28,7 @@ public class weatherController {
     }
 
     @PostMapping("/weathercity")
-    public ResponseEntity<Object> getWeather(
+    public ResponseEntity<ResponseHeader> getWeather(
            @RequestParam("city") String city) {
 
         return weatherService.getItems(city);

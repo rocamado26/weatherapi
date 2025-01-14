@@ -1,4 +1,4 @@
-package com.roberto.weatherapi.dto;
+package com.roberto.weatherapi.dto.weatherapi;
 
 import lombok.Getter;
 import lombok.Setter;

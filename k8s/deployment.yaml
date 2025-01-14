@@ -1,0 +1,142 @@
+## DEPLOYMENT
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: weather-api
+spec:
+  replicas: 1
+  minReadySeconds: 7
+  selector:
+    matchLabels:
+      app: weather-api
+      tier: backend
+  template:
+    metadata:
+      labels:
+        app: weather-api
+        tier: backend
+    spec:
+      automountServiceAccountToken: false
+      containers:
+        - name: weather-api
+          image: weather-api
+          securityContext:
+            capabilities:
+              drop:
+                - NET_RAW
+            allowPrivilegeEscalation: false
+            seccompProfile:
+              type: RuntimeDefault
+          imagePullPolicy: Always
+          resources:
+            limits:
+              memory: "360Mi"
+              cpu: "300m"
+            requests:
+              memory: "256Mi"
+              cpu: "200m"
+          ports:
+            - containerPort: 8081
+          readinessProbe:
+            httpGet:
+              path: /weather/actuator/health
+              port: 8081
+            initialDelaySeconds: 10
+            periodSeconds: 20
+            timeoutSeconds: 8
+          livenessProbe:
+            httpGet:
+              path: /weather/actuator/health
+              port: 8081
+            initialDelaySeconds: 10
+            periodSeconds: 20
+            timeoutSeconds: 8
+          startupProbe:
+            httpGet:
+              path: /weather/actuator/health
+              port: 8081
+            initialDelaySeconds: 180
+            timeoutSeconds: 8
+          env:
+            - name: TZ
+              value: America/El_Salvador
+            - name: SERVER_PORT
+              valueFrom:
+                configMapKeyRef:
+                  name: properties-weather-api
+                  key: server.port
+            - name: URL_WEATHER_API
+              valueFrom:
+                configMapKeyRef:
+                  name: properties-weather-api
+                  key: url.api.weather
+            - name: LOG_LEVEL
+              valueFrom:
+                configMapKeyRef:
+                  name: properties-weather-api
+                  key: log.level
+            - name: APPLICATION_NAME
+              valueFrom:
+                configMapKeyRef:
+                  name: properties-weather-api
+                  key: application.name
+            - name: KEY_API
+              valueFrom:
+                configMapKeyRef:
+                  name: properties-weather-api
+                  key: key.api
+      volumes: # 1) Volumes mounted into the Pod
+        - name: properties-weather-api
+          configMap:
+            name: properties-weather-api
+            items:
+              - key: server.port
+                path: SERVER_PORT
+              - key: url.api.weather
+                path: URL_WEATHER_API
+              - key: log.level
+                path: LOG_LEVEL
+              - key: application.name
+                path: APPLICATION_NAME
+              - key: key.api
+                path: KEY_API
+---
+## BACKEND CONFIG
+apiVersion: cloud.google.com/v1
+kind: BackendConfig
+metadata:
+  name: weather-api-backendconfig
+spec:
+  timeoutSec: 300
+  healthCheck:
+    checkIntervalSec: 300
+    timeoutSec: 180
+    healthyThreshold: 2
+    unhealthyThreshold: 2
+    type: HTTP
+    requestPath: /weather/actuator/health
+    port: 8081
+
+---
+### SERVICE
+apiVersion: v1
+kind: Service
+metadata:
+  annotations:
+    cloud.google.com/neg: '{"ingress":true}'
+    cloud.google.com/backend-config: '{"default": "weather-api-backendconfig"}'
+  name: s-weather-api-private-qa
+spec:
+  internalTrafficPolicy: Cluster
+  ipFamilies:
+    - IPv4
+  ipFamilyPolicy: SingleStack
+  ports:
+    - name: service-port-internal
+      port: 8081
+      protocol: TCP
+      targetPort: 8081
+  selector:
+    app: weather-api
+  sessionAffinity: None
+  type: ClusterIP

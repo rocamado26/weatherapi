@@ -34,7 +34,10 @@ Authorization: Bearer {TOKEN}
 PARAMETROS:
 city: {ciudad}
 RESPUESTA
-
+{
+    "message": "Las condiciones del clima para el día 2025-01-15 es",
+    "condicion_clima": "Soleado"
+}
 
 
 PARA MAYOR REFERENCIA, SE COMPARTE LA COLECCION DE POSTMAN EN LA CARPETA "postmanCollection"

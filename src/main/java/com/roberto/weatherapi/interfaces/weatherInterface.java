@@ -1,9 +1,10 @@
 package com.roberto.weatherapi.interfaces;
 
+import com.roberto.weatherapi.dto.response.ResponseHeader;
 import org.springframework.http.ResponseEntity;
 
 public interface weatherInterface {
 
-    ResponseEntity<Object> getItems(String City);
+    ResponseEntity<ResponseHeader> getItems(String City);
 
 }
