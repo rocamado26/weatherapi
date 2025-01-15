@@ -83,4 +83,4 @@ spec:
       targetPort: 8081
   selector:
     app: weather-api
-  type: LoadBalancer
+  type: NodePort
