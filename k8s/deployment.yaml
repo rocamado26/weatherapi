@@ -4,8 +4,7 @@ kind: Deployment
 metadata:
   name: weather-api
 spec:
-  replicas: 1
-  minReadySeconds: 7
+  replicas: 3
   selector:
     matchLabels:
       app: weather-api
@@ -17,36 +16,9 @@ spec:
       containers:
         - name: weather-api
           image: weather-api:latest
-          resources:
-            limits:
-              memory: "360Mi"
-              cpu: "300m"
-            requests:
-              memory: "256Mi"
-              cpu: "200m"
           ports:
             - containerPort: 8081
           imagePullPolicy: Never
-          readinessProbe:
-            httpGet:
-              path: /weather/actuator/health
-              port: 8081
-            initialDelaySeconds: 10
-            periodSeconds: 20
-            timeoutSeconds: 8
-          livenessProbe:
-            httpGet:
-              path: /weather/actuator/health
-              port: 8081
-            initialDelaySeconds: 10
-            periodSeconds: 20
-            timeoutSeconds: 8
-          startupProbe:
-            httpGet:
-              path: /weather/actuator/health
-              port: 8081
-            initialDelaySeconds: 180
-            timeoutSeconds: 8
           env:
             - name: TZ
               value: America/El_Salvador
